@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block base1 %}
+
+
+
+<div class="container my-3">
+  <form action="/" method="POST">
+    <div class="mb-3">
+      <label for="exampleInputEmail1" class="form-label">Email address</label>
+      <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp">
+      <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Password</label>
+      <input type="password" class="form-control" name="password" id="password">
+    </div>
+    <div class="mb-3 form-check">
+      <input type="checkbox" class="form-check-input" id="exampleCheck1">
+      <label class="form-check-label" for="exampleCheck1">Check me out</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <a href="/register" type="button" class="btn btn-primary mx-2">Register</a>
+  </form>
+</div>
+
+<div class="container">
+
+  {% if alluser|length == 0 and not message%}
+  <div class="alert alert-primary" role="alert">
+    No records
+  </div>
+  {% else %}
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">sno</th>
+        <th scope="col">email</th>
+        <th scope="col">password</th>
+        <th scope="col">Actions</th>
+
+      </tr>
+    </thead>
+    <tbody>
+
+    {% for user in alluser %}
+          <tr>
+            <th scope="row">{{loop.index}}</th>
+            <td>{{user.email}}</td>
+            <td>{{user.password}}</td>
+            <td>
+              <a href="/delete/{{user.sno}}" type="button" class="btn btn-outline-dark btn-sm mx-1">Delete</a>
+                <a href="/update/{{user.sno}}" type="button" class="btn btn-outline-dark btn-sm mx-1">Update</a>
+            </td>
+          </tr>
+        
+  {% endfor %}
+</tbody>
+</table>
+  {% endif %}
+
+  {% if message %}
+  <div class="alert alert-success" role="alert">
+    A simple success alert—check it out!
+  </div>
+  {% endif %}
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+{% endblock base1 %}
