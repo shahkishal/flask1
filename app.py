@@ -41,7 +41,7 @@ def predict():
         if request.method == 'GET' :
              return render_template('predict_page.html')
         else:
-            csv_file = r'E:/flask/final2.csv'
+            csv_file = r'final2.csv'
             data = pd.read_csv(csv_file)
     
             if(int(request.form['password']) == 1):
