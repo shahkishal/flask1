@@ -1,10 +1,15 @@
 from flask import Flask , render_template,request,redirect
 from flask_sqlalchemy import SQLAlchemy
+import numpy as np
+import joblib
+import pandas as pd
 
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///users.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+model = joblib.load('models/sales_model.pkl')
+
 db = SQLAlchemy(app)
 app.app_context().push()
 
@@ -30,6 +35,35 @@ def hello_world():
 
     alluser = Users.query.all()
     return render_template('index.html',alluser=alluser)
+
+@app.route('/predict',methods=['GET' , 'POST'])
+def predict():
+        if request.method == 'GET' :
+             return render_template('predict_page.html')
+        else:
+            csv_file = r'E:/flask/final2.csv'
+            data = pd.read_csv(csv_file)
+    
+            if(int(request.form['password']) == 1):
+                selected_data = data[(data['Risk'] < 0.0124) & (data['close'] < int(request.form['email']))]
+            elif(int(request.form['password']) == 2):
+                selected_data = data[(data['Risk'] >= 0.0124)&(data['Risk'] < 0.0161) & (data['close'] < int(request.form['email']))]
+            else:
+                selected_data = data[(data['Risk'] > 0.0161) & (data['close'] < int(request.form['email']))]
+            
+            # Convert selected_data to a list of dictionaries (JSON-like format)
+            selected_data_list = selected_data['symbol'].tolist()
+            symbol_string = ' '.join(selected_data_list)
+            return render_template('predict_page.html', prediction_text=symbol_string)
+
+
+@app.route('/chat',methods=['GET' , 'POST'])
+def chat():
+        if request.method == 'GET' :
+             return render_template('chat.html')
+       
+
+
 
 @app.route('/show')
 def products():
