@@ -69,7 +69,7 @@ def predict():
             # return jsonify(predictions)
             selected_data_list = selected_data['company_name'].tolist()
             website_links = selected_data['website_link'].tolist()  # assuming you have a 'website_link' column in your CSV file
-
+    
             predictions = [{'prediction_text': symbol, 'website_link': link} for symbol, link in zip(selected_data_list, website_links)]
             return jsonify(predictions)
 
