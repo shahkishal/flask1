@@ -1,10 +1,10 @@
-from flask import Flask , render_template,request,redirect
+from flask import Flask , render_template,request,redirect, send_from_directory , jsonify
 from flask_sqlalchemy import SQLAlchemy
 import numpy as np
 import joblib
 import pandas as pd
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static/build', static_url_path='')
 
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///users.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -39,28 +39,38 @@ def hello_world():
 @app.route('/predict',methods=['GET' , 'POST'])
 def predict():
         if request.method == 'GET' :
-             return render_template('predict_page.html')
+            #  return render_template('predict_page.html')
+            return send_from_directory(app.static_folder, 'index.html')
         else:
             csv_file = r'final2.csv'
             data = pd.read_csv(csv_file)
-    
-            if(int(request.form['password']) == 1):
-                selected_data = data[(data['Risk'] < 0.0124) & (data['close'] < int(request.form['email']))]
-            elif(int(request.form['password']) == 2):
-                selected_data = data[(data['Risk'] >= 0.0124)&(data['Risk'] < 0.0161) & (data['close'] < int(request.form['email']))]
+            data2 = request.json
+            print(data2['password'])
+            if data2['password'] == "":
+                print('---------------------'+data2['password'])
+
+            email = int(data2['email'])  # Convert to integer
+            password = int(data2['password'])  # Convert to integer
+            
+            if(password == 1):
+                selected_data = data[(data['Risk'] < 0.0124) & (data['close'] < email)]
+            elif(password == 2):
+                selected_data = data[(data['Risk'] >= 0.0124)&(data['Risk'] < 0.0161) & (data['close'] < email)]
             else:
-                selected_data = data[(data['Risk'] > 0.0161) & (data['close'] < int(request.form['email']))]
+                selected_data = data[(data['Risk'] > 0.0161) & data['close'] < email]
+                
             
             # Convert selected_data to a list of dictionaries (JSON-like format)
             selected_data_list = selected_data['symbol'].tolist()
             symbol_string = ' '.join(selected_data_list)
-            return render_template('predict_page.html', prediction_text=symbol_string)
+            # return send_from_directory(app.static_folder, 'index.html', predictionText=symbol_string)
+            return jsonify({'prediction_text': symbol_string})
 
 
 @app.route('/chat',methods=['GET' , 'POST'])
 def chat():
         if request.method == 'GET' :
-             return render_template('chat.html')
+             return send_from_directory(app.static_folder, 'index.html')
        
 
 
