@@ -15,7 +15,51 @@
             <input type="password" class="form-control"  name="password" id="password">
         </div>
        
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">Register</button>
+        <a href="/register" type="button" class="btn btn-primary mx-2">Login</a>
+
+        
+ 
+            <div class="container">
+            
+              {% if alluser|length == 0 and not message%}
+              <div class="alert alert-primary" role="alert">
+                No records
+              </div>
+              {% else %}
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">sno</th>
+                    <th scope="col">email</th>
+                    <th scope="col">password</th>
+                    <th scope="col">Actions</th>
+            
+                  </tr>
+                </thead>
+                <tbody>
+            
+                {% for user in alluser %}
+                      <tr>
+                        <th scope="row">{{loop.index}}</th>
+                        <td>{{user.email}}</td>
+                        <td>{{user.password}}</td>
+                        <td>
+                          <a href="/delete/{{user.sno}}" type="button" class="btn btn-outline-dark btn-sm mx-1">Delete</a>
+                            <a href="/update/{{user.sno}}" type="button" class="btn btn-outline-dark btn-sm mx-1">Update</a>
+                        </td>
+                      </tr>
+                    
+              {% endfor %}
+            </tbody>
+            </table>
+              {% endif %}
+            
+              {% if message %}
+              <div class="alert alert-success" role="alert">
+                A simple success alert—check it out!
+              </div>
+              {% endif %}
     </form>
 </div>
 {% endblock base1 %}
